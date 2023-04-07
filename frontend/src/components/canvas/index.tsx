@@ -1,65 +1,83 @@
-import React, { useState, useRef, useEffect } from 'react';
-import styles from '@/components/canvas/Canvas.module.css';
-import Sidebar from '@/components/sidebar';
+import React, { useState, useRef, useEffect } from "react";
 
-function Canvas() {
-  const [startPos, setStartPos] = useState<{ x: number; y: number } | null>(null);
-  const svgRef = useRef<SVGSVGElement | null>(null);
+interface CanvasProps {
+  width: number;
+  height: number;
+}
+
+interface Rectangle {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [rectangles, setRectangles] = useState<Rectangle[]>([]);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [startCoordinates, setStartCoordinates] = useState({ x: 0, y: 0 });
+  const [endCoordinates, setEndCoordinates] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const svg = svgRef.current;
-    if (svg) {
-      svg.setAttribute('width', '100%');
-      svg.setAttribute('height', '100%');
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+      if (context) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        rectangles.forEach((rectangle) => {
+          context.fillStyle = "rgba(255, 0, 0, 0.5)";
+          context.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        });
+      }
     }
-  }, []);
+  }, [rectangles]);
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    setStartPos({ x: event.clientX, y: event.clientY });
+  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    setIsDrawing(true);
+    setStartCoordinates({ x: event.nativeEvent.offsetX, y: event.nativeEvent.offsetY });
   };
 
-  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    if (startPos) {
-      const svg = svgRef.current;
-      if (svg) {
-        const x = Math.min(startPos.x, event.clientX);
-        const y = Math.min(startPos.y, event.clientY);
-        const width = Math.abs(event.clientX - startPos.x);
-        const height = Math.abs(event.clientY - startPos.y);
-        const d = `M${x},${y} H${x + width} V${y + height} H${x} V${y}`;
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', d);
-        path.setAttribute('fill', 'red');
-        path.setAttribute('opacity', '0.5');
-        if (svg.lastChild) {
-          svg.lastChild?.replaceWith(path);
-        } else {
-          svg.appendChild(path);
-        }
-      }
+  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (isDrawing) {
+      setEndCoordinates({ x: event.nativeEvent.offsetX, y: event.nativeEvent.offsetY });
     }
   };
 
   const handleMouseUp = () => {
-    setStartPos(null);
+    setIsDrawing(false);
+    const newRectangle: Rectangle = {
+      x: Math.min(startCoordinates.x, endCoordinates.x),
+      y: Math.min(startCoordinates.y, endCoordinates.y),
+      width: Math.abs(endCoordinates.x - startCoordinates.x),
+      height: Math.abs(endCoordinates.y - startCoordinates.y),
+    };
+    setRectangles([...rectangles, newRectangle]);
   };
 
   return (
-    <div className={styles.content}>
-      <Sidebar>
-        <canvas
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          className={styles.canvas}
-        />
-      </Sidebar>
-      
-      <div className={styles.main}>
-        <svg ref={svgRef}/>
-      </div>
-    </div>
+    <canvas
+      ref={canvasRef}
+      width={width}
+      height={height}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+    >
+      <svg width={width} height={height}>
+        {rectangles.map((rectangle, index) => (
+          <rect
+            key={index}
+            x={rectangle.x}
+            y={rectangle.y}
+            width={rectangle.width}
+            height={rectangle.height}
+            fill="rgba(255, 0, 0, 0.5)"
+          />
+        ))}
+      </svg>
+    </canvas>
   );
-}
+};
 
 export default Canvas;
