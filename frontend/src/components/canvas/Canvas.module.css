@@ -1,0 +1,16 @@
+.content {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+}
+
+.canvas {
+  position: relative;
+  border: 0.5rem solid;
+  border-color: red yellow green blue;
+}
+
+.main {
+  flex: 1;
+  padding: 20px;
+}
