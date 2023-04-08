@@ -6,79 +6,78 @@ interface CanvasProps {
 }
 
 interface Rectangle {
+  id: string;
   x: number;
   y: number;
   width: number;
   height: number;
-  id: string;
 }
 
-const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+type Props = {
+  className?: string
+}
+
+function Canvas(props: Props) {
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [reactangleId, setRectangleId] = useState('');
-  const [startCoordinates, setStartCoordinates] = useState({ x: 0, y: 0 });
-  const [endCoordinates, setEndCoordinates] = useState({ x: 0, y: 0 });
+  const [startPos, setStartPos] = useState<{ x: number; y: number } | null>(
+    null
+  );
+  const [currentPos, setCurrentPos] = useState<{ x: number; y: number } | null>(
+    null
+  );
+  const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
-      if (context) {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        rectangles.forEach((rectangle) => {
-          context.fillStyle = "red";
-          context.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-        });
-      }
+    if (svgRef.current) {
+      const svg = svgRef.current;
+      console.log(svg.childNodes.length == 0); // FIXME try to make graphql call
     }
   }, [rectangles]);
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    let rect = rectangles.filter((rectangle) => (rectangle.x <= event.nativeEvent.offsetX && event.nativeEvent.offsetX <= rectangle.x + rectangle.width)
-    && (rectangle.y <= event.nativeEvent.offsetY && event.nativeEvent.offsetY <= rectangle.y + rectangle.height))
-    if (rect.length != 0) {
-      setRectangleId(rect[0].id)
-      return
-    }
+
+  const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
     setIsDrawing(true);
-    setStartCoordinates({ x: event.nativeEvent.offsetX, y: event.nativeEvent.offsetY });
+    setStartPos({ x: e.clientX, y: e.clientY });
   };
 
-  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (isDrawing) {
-      setEndCoordinates({ x: event.nativeEvent.offsetX, y: event.nativeEvent.offsetY });
-    }
+  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!isDrawing) return;
+    setCurrentPos({ x: e.clientX, y: e.clientY });
   };
 
   const handleMouseUp = () => {
-    if (reactangleId != '') {
-      setRectangles(rectangles.filter((rectangle) => rectangle.id !== reactangleId));
-      setRectangleId('')
-      return
-    }
     setIsDrawing(false);
-    const newRectangle: Rectangle = {
-      x: Math.min(startCoordinates.x, endCoordinates.x),
-      y: Math.min(startCoordinates.y, endCoordinates.y),
-      width: Math.abs(endCoordinates.x - startCoordinates.x),
-      height: Math.abs(endCoordinates.y - startCoordinates.y),
-      id: Date.now().toString(),
-    };
-    console.log(newRectangle)
-    setRectangles([...rectangles, newRectangle]);
+    if (!startPos || !currentPos) return;
+    const x = Math.min(startPos.x, currentPos.x); // FIXME need to fix drawing width
+    const y = Math.min(startPos.y, currentPos.y);
+    const width = Math.abs(startPos.x - currentPos.x);
+    const height = Math.abs(startPos.y - currentPos.y);
+    const id: string = Date.now().toString(); // using timestamp as id for now
+    setRectangles([...rectangles, { id, x, y, width, height }]);
+    setStartPos(null);
+    setCurrentPos(null);
   };
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={width}
-      height={height}
+    <svg
+      ref={svgRef}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-    />
+      className={props.className}
+    >
+      {rectangles.map((rectangle) => (
+        <rect
+          key={rectangle.id}
+          x={rectangle.x}
+          y={rectangle.y}
+          width={rectangle.width}
+          height={rectangle.height}
+          fill="white"
+        />
+      ))}
+    </svg>
   );
 };
 
