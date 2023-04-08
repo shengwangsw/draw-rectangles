@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './Sidebar.module.css';
 
 interface Props {
+  numRectangles: number;
   children: React.ReactNode;
 }
 
