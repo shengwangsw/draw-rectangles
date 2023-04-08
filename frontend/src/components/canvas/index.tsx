@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 
 interface CanvasProps {
   width: number;
@@ -65,7 +64,7 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
       y: Math.min(startCoordinates.y, endCoordinates.y),
       width: Math.abs(endCoordinates.x - startCoordinates.x),
       height: Math.abs(endCoordinates.y - startCoordinates.y),
-      id: uuidv4(),
+      id: Date.now().toString(),
     };
     console.log(newRectangle)
     setRectangles([...rectangles, newRectangle]);
