@@ -10,11 +10,13 @@ function Sidebar( props: Props ) {
   return (
     <div className={styles.sidebar}>
       <h1>Draw Rectangles</h1>
-      <div>
-        <li>1 Line</li>
-        <li>2 Line</li>
-      </div>
       {props.children}
+      <div className={styles.footer}>
+        <p className={styles.elements}>
+          {props.numRectangles} elements
+        </p>
+        <button>Clear</button>
+      </div>
     </div>
   );
 }

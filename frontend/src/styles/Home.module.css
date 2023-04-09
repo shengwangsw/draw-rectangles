@@ -9,3 +9,33 @@
   width: 100%;
   min-height: 100vh;
 }
+
+.button {
+  margin: 1rem;
+  padding: 0.5rem;
+}
+
+.blue {
+  background-color: blue;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  opacity: 50%;
+}
+
+.red {
+  background-color: red;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  opacity: 50%;
+}
+
+.yellow {
+  background-color: yellow;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  opacity: 50%;
+}
+
+.selected {
+  opacity: 100%;
+}

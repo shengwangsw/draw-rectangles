@@ -5,7 +5,18 @@
   border: 0.5rem solid;
   border-color: gray;
   padding: 1rem;
-  width: 300px; /* this is linked to canva start width */
+  width: 300px;
   padding: 25px;
   z-index: 1;   /* make it on front */
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  text-align: center;
+  padding: 2rem;
+}
+
+.elements {
+  padding: 1rem;
 }

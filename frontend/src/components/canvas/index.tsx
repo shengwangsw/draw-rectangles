@@ -1,5 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 
+export enum Color {
+  NONE,
+  BLUE,
+  RED,
+  YELLOW
+}
+
 export interface Rectangle {
   id: string;
   x: number;

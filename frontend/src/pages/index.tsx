@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
-import Canvas, { Rectangle } from '@/components/canvas'
+import Canvas, { Rectangle, Color } from '@/components/canvas'
 import Sidebar from '@/components/sidebar'
 import React, { useState, useEffect } from "react";
 
@@ -8,10 +8,48 @@ import React, { useState, useEffect } from "react";
 export default function Home() {
 
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
-
+  const [color, setColor] = useState<Color>(Color.NONE);
   useEffect(() => {
     // FIXME load rectangles
   }, [rectangles]);
+
+  const ButtonAdd = () => {
+    return (
+      <button className={styles.button}>
+        +
+      </button>
+    )
+  }
+
+  const ButtonRemove = () => {
+    return (
+      <button
+        className={styles.button}
+        disabled={rectangles.length==0}
+      >
+        -
+      </button>
+    )
+  }
+
+  const ColorSelector = () => {
+    return (
+      <div>
+        <button
+          className={`${color==Color.BLUE?styles.selected:''} ${styles.blue}`}
+          onClick={() => setColor(Color.BLUE)}
+        />
+        <button
+          className={`${color==Color.RED?styles.selected:''} ${styles.red}`}
+          onClick={() => setColor(Color.RED)}
+        />
+        <button
+          className={`${color==Color.YELLOW?styles.selected:''} ${styles.yellow}`}
+          onClick={() => setColor(Color.YELLOW)}
+        />
+      </div>
+    )
+  }
 
   return (
     <>
@@ -23,7 +61,13 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <Sidebar numRectangles={rectangles.length}>
-          
+          <div>
+            <ButtonAdd />
+            <ButtonRemove />
+          </div>
+          <div>
+            <ColorSelector />
+          </div>
         </Sidebar>
         
         <Canvas
