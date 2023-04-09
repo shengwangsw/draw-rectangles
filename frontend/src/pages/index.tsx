@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
-import Canvas, { Rectangle, Color } from '@/components/canvas'
+import Canvas, { Rectangle } from '@/components/canvas'
+import { Action, Color } from '@/components/canvas/enums'
 import Sidebar from '@/components/sidebar'
 import React, { useState, useEffect } from "react";
 
@@ -9,13 +10,18 @@ export default function Home() {
 
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
   const [color, setColor] = useState<Color>(Color.NONE);
+  const [action, setAction] = useState<Action>(Action.NONE);
+  
   useEffect(() => {
-    // FIXME load rectangles
+    // FIXME graphql client load rectangles
   }, [rectangles]);
 
   const ButtonAdd = () => {
     return (
-      <button className={styles.button}>
+      <button
+        className={styles.button}
+        onClick={() => setAction(Action.ADD)}
+      >
         +
       </button>
     )
@@ -25,6 +31,7 @@ export default function Home() {
     return (
       <button
         className={styles.button}
+        onClick={() => setAction(Action.REMOVE)}
         disabled={rectangles.length==0}
       >
         -
@@ -33,6 +40,9 @@ export default function Home() {
   }
 
   const ColorSelector = () => {
+    if (action != Action.ADD) {
+      return <div></div>
+    }
     return (
       <div>
         <button
@@ -51,6 +61,11 @@ export default function Home() {
     )
   }
 
+  const clearRectangles = () => {
+    // FIXME graphql client remove all
+    setRectangles([]);
+  }
+
   return (
     <>
       <Head>
@@ -60,7 +75,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <Sidebar numRectangles={rectangles.length}>
+        <Sidebar
+          numRectangles={rectangles.length}
+          clearRectangles={clearRectangles}
+        >
           <div>
             <ButtonAdd />
             <ButtonRemove />
@@ -71,8 +89,10 @@ export default function Home() {
         </Sidebar>
         
         <Canvas
+          action={action}
+          color={color}
           rectangles={rectangles}
-          setRectangles={setRectangles} // FIXME meet to handle this to add or remove rectangle
+          setRectangles={setRectangles}
           className={styles.canvas}
         />
       </main>
