@@ -12,6 +12,7 @@ sqlalchemy = "1.4"
 graphene-sqlalchemy = "^2.3.0"
 flask = "^2.2.3"
 flask-graphql = "^2.0.1"
+python-dotenv = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^2.17.2"
