@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Flask-GraphQL = "^2.0.1"
+graphene = "^3.2.2"
+Flask = "^2.2.3"
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^2.17.2"
+mypy = "^1.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+files = "src, tests"
+strict = true
+warn_unreachable = true
+allow_subclassing_any = true
+ignore_miggins_imports = false
+show_error_codes = true
+install_types = true
+non_interactive = true
