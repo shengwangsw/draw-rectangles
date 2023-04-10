@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import {Action, Color} from '@/components/canvas/enums';
+import { gql, useQuery, useMutation } from '@apollo/client';
 
 export interface Rectangle {
   id: string;
@@ -8,6 +9,31 @@ export interface Rectangle {
   width: number;
   height: number;
   color: string;
+}
+
+const WRITE_RECTANGLE = gql`
+mutation WriteRectangle($ts: String!, $x: Float!, $y: Float!, $width: Float!, $height: Float!, $color: String!) {
+  writeRectangle(ts: $ts, x: $x, y: $y, width: $width, height: $height, color: $color) {
+    rectangle {
+      id
+      ts
+      x
+      y
+      width
+      height
+      color
+    }
+  }
+}
+`;
+
+const WRITE_VARIABLES = {
+  "ts": "12345",
+  "x": 500,
+  "y": 500,
+  "width": 50,
+  "height": 80,
+  "color": "blue"
 }
 
 type Props = {
@@ -28,6 +54,7 @@ function Canvas(props: Props) {
     null
   );
   const svgRef = useRef<SVGSVGElement>(null);
+  const [addRectangle] = useMutation<AddPointsResult>(WRITE_RECTANGLE);
 
   const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
     setIsDrawing(true);

@@ -24,14 +24,6 @@ query {
 }
 `;
 
-interface node {
-  node: Rectangle;
-}
-
-interface edges {
-  edges: node[];
-}
-
 interface GetRectanglesResult {
   allRectangles: {
     edges: {

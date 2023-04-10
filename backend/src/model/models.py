@@ -5,6 +5,7 @@ from sqlalchemy import (
     String,
     Float,
     Enum,
+    Integer
 )
 from sqlalchemy.orm import (
     scoped_session,
@@ -28,7 +29,8 @@ class Color(EnumClass):
 
 class Rectangle(Base):
     __tablename__ = 'rectangle'
-    id = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ts = Column(String)
     x = Column(Float)
     y = Column(Float)
     width = Column(Float)
