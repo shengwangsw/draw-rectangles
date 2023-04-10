@@ -4,17 +4,55 @@ import Canvas, { Rectangle } from '@/components/canvas'
 import { Action, Color } from '@/components/canvas/enums'
 import Sidebar from '@/components/sidebar'
 import React, { useState, useEffect } from "react";
+import { gql, useQuery, useMutation } from '@apollo/client';
 
+
+const GET_RECTANGLES = gql`
+query {
+  allRectangles {
+    edges {
+      node {
+        id
+        x
+        y
+        width
+        height
+        color
+      }
+    }
+  }
+}
+`;
+
+interface node {
+  node: Rectangle;
+}
+
+interface edges {
+  edges: node[];
+}
+
+interface GetRectanglesResult {
+  allRectangles: {
+    edges: {
+      node: Rectangle;
+    }[];
+  };
+};
 
 export default function Home() {
 
   const [rectangles, setRectangles] = useState<Rectangle[]>([]);
   const [color, setColor] = useState<Color>(Color.NONE);
   const [action, setAction] = useState<Action>(Action.NONE);
+  const { loading, error, data } = useQuery<GetRectanglesResult>(GET_RECTANGLES);
   
   useEffect(() => {
-    // FIXME graphql client load rectangles
-  }, [rectangles]);
+    if (data) {
+      const rectangles: Rectangle[] = data.allRectangles.edges.map((edge) => edge.node);
+      setRectangles(rectangles)
+    }
+  }, [data]);
 
   const ButtonAdd = () => {
     return (
