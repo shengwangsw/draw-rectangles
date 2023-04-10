@@ -1,2 +1,6 @@
+from server.app import app
+from dummy import create_dummy
+
 if __name__ == '__main__':
-  print('hello world!')
+  create_dummy()
+  app.run()
