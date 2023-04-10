@@ -97,6 +97,6 @@ function Canvas(props: Props) {
       ))}
     </svg>
   );
-};
+}
 
 export default Canvas;
