@@ -1,9 +1,12 @@
+from time import time
 from model.models import (
     engine,
     db_session,
     Base,
     Department,
-    Employee
+    Employee,
+    Rectangle,
+    Color
 )
 
 def create_dummy():
@@ -21,4 +24,12 @@ def create_dummy():
     db_session.add(roy)
     tracy = Employee(name='Tracy', department=hr)
     db_session.add(tracy)
+
+    rectangle = Rectangle(id=time()*1000,
+                          x=300,
+                          y=300,
+                          width=100,
+                          height=100,
+                          color=Color.RED)
+    db_session.add(rectangle)
     db_session.commit()

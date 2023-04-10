@@ -1,8 +1,10 @@
-# flask_sqlalchemy/models.py
+from enum import (Enum as EnumClass)
 from sqlalchemy import (create_engine,
                         Column,
                         Integer,
                         String,
+                        Float,
+                        Enum,
                         DateTime,
                         func,
                         ForeignKey)
@@ -39,3 +41,17 @@ class Employee(Base):
         backref=backref('employees',
                         uselist=True,
                         cascade='delete,all'))
+    
+class Color(EnumClass):
+    BLUE = 'blue'
+    RED = 'red'
+    YELLOW = 'yellow'
+
+class Rectangle(Base):
+    __tablename__ = 'rectangle'
+    id = Column(String, primary_key=True)
+    x = Column(Float)
+    y = Column(Float)
+    width = Column(Float)
+    height = Column(Float)
+    color = Column(Enum(Color))
