@@ -3,7 +3,7 @@ from flask import Flask
 from flask_graphql import GraphQLView
 
 from model.models import db_session
-from server.schema import schema, Department
+from server.schema import schema
 
 app = Flask(__name__)
 app.debug = True
@@ -19,4 +19,6 @@ app.add_url_rule(
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
+    if exception:
+        print(f'tear down threw exception: {exception}')
     db_session.remove()

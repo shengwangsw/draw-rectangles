@@ -1,8 +1,10 @@
-# flask_sqlalchemy/schema.py
 import graphene
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
-from model.models import db_session, Department as DepartmentModel, Employee as EmployeeModel
+from model.models import (
+    Department as DepartmentModel,
+    Employee as EmployeeModel
+)
 
 
 class Department(SQLAlchemyObjectType):
