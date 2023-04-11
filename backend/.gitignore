@@ -41,3 +41,4 @@ pip-wheel-metadata
 poetry/core/*
 
 *.sqlite3
+.env
