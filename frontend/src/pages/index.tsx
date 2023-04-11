@@ -13,6 +13,7 @@ query {
     edges {
       node {
         id
+        ts
         x
         y
         width

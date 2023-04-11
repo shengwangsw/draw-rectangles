@@ -16,5 +16,4 @@ FROM python as runtime
 ENV PATH="/app/.venv/bin:$PATH"
 COPY --from=poetry /app /app
 EXPOSE 8000
-
-CMD python run src/main.py
+CMD python src/main.py

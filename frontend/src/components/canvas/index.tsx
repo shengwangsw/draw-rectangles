@@ -95,13 +95,16 @@ function Canvas(props: Props) {
     const toRemove = props.rectangles.filter(
       (element) => filterRectangles(element, point)
     )[0]
-    await removeRectangleMutation({ 
-      variables: {ts: toRemove.ts}
-    })
-    // TODO improve the way to remove rectangle from the list
-    props.setRectangles(props.rectangles.filter(
-      (element) => !filterRectangles(element, point)
-    ));
+
+    if (toRemove) {
+      await removeRectangleMutation({ 
+        variables: {ts: toRemove.ts}
+      })
+      // TODO improve the way to remove rectangle from the list
+      props.setRectangles(props.rectangles.filter(
+        (element) => !filterRectangles(element, point)
+      ));
+    }
   }
 
   const filterRectangles = (rectangle: Rectangle, point: {x: number, y: number}) => {
