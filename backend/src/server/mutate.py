@@ -21,11 +21,7 @@ class CreateRectangle(graphene.Mutation):
     rectangle = graphene.Field(lambda: RectangleObject)
 
     def mutate(self, info, ts, x, y, width, height, color):
-        print("debug1")
-        print(color)
-        print(getattr(Color, color.upper()))
         if (color := getattr(Color, color.upper())):
-            print(id)
             rectangle = RectangleModel(
                 ts=ts,
                 x=x,
@@ -57,9 +53,9 @@ class UpdateRectangle(graphene.Mutation):
     rectangle = graphene.Field(lambda: RectangleObject)
 
     def mutate(self, info, ts, x, y, width, height, color):
-        rectangle = db_session.query(RectangleObject).filter(
-            RectangleObject.Meta.model.ts==ts)
-        if rectangle and (color := getattr(Color, color)):
+        rectangle = db_session.query(RectangleModel).filter(RectangleModel.ts == ts).first()
+        print(rectangle)
+        if rectangle and (color := getattr(Color, color.upper())):
             rectangle.x = x
             rectangle.y = y
             rectangle.width = width
@@ -74,13 +70,12 @@ class UpdateRectangle(graphene.Mutation):
     
 class RemoveRectangle(graphene.Mutation):
     class Arguments:
-        id = graphene.String(required=True)
+        ts = graphene.String(required=True)
 
     rectangle = graphene.Field(lambda: RectangleObject)
 
     def mutate(self, info, ts):
-        rectangle = db_session.query(RectangleObject).filter(
-            RectangleObject.Meta.model.ts==ts)
+        rectangle = db_session.query(RectangleModel).filter(RectangleModel.ts == ts).first()
         if rectangle:
             db_session.delete(rectangle)
             db_session.commit()
@@ -90,12 +85,13 @@ class RemoveRectangle(graphene.Mutation):
 
 class RemoveAllRectangles(graphene.Mutation):
 
+    # TODO update to boolean
     rectangle = graphene.Field(lambda: RectangleObject)
 
     def mutate(self, info):
-        db_session.query(RectangleObject).delete()
+        db_session.query(RectangleModel).delete()
         db_session.commit()
-        return RemoveAllRectangles({"sucess": True})
+        return RemoveAllRectangles(rectangle=None)
         
 
 

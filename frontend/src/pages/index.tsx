@@ -24,6 +24,16 @@ query {
 }
 `;
 
+const REMOVE_ALL = gql`
+mutation RemoveAllRectangle {
+  removeAllRectangles {
+    rectangle {
+      id
+    }
+  }
+}
+`;
+
 interface GetRectanglesResult {
   allRectangles: {
     edges: {
@@ -38,7 +48,7 @@ export default function Home() {
   const [color, setColor] = useState<Color>(Color.NONE);
   const [action, setAction] = useState<Action>(Action.NONE);
   const { loading, error, data } = useQuery<GetRectanglesResult>(GET_RECTANGLES);
-  
+  const [removeAll] = useMutation<any>(REMOVE_ALL);
   useEffect(() => {
     if (data) {
       const rectangles: Rectangle[] = data.allRectangles.edges.map((edge) => edge.node);
@@ -91,8 +101,8 @@ export default function Home() {
     )
   }
 
-  const clearRectangles = () => {
-    // FIXME graphql client remove all
+  const clearRectangles = async () => {
+    await removeAll()
     setRectangles([]);
   }
 
