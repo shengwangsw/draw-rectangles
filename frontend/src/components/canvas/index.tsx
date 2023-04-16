@@ -1,10 +1,9 @@
 import React, { useState, useRef } from "react";
 import {Action, Color} from '@/components/canvas/enums';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 
 export interface Rectangle {
   id: string;
-  ts: string;
   x: number;
   y: number;
   width: number;
@@ -13,11 +12,10 @@ export interface Rectangle {
 }
 
 const CREATE_RECTANGLE = gql`
-mutation CreateRectangle($ts: String!, $x: Float!, $y: Float!, $width: Float!, $height: Float!, $color: String!) {
-  createRectangle(ts: $ts, x: $x, y: $y, width: $width, height: $height, color: $color) {
+mutation CreateRectangle($x: Float!, $y: Float!, $width: Float!, $height: Float!, $color: String!) {
+  createRectangle(x: $x, y: $y, width: $width, height: $height, color: $color) {
     rectangle {
       id
-      ts
       x
       y
       width
@@ -28,11 +26,10 @@ mutation CreateRectangle($ts: String!, $x: Float!, $y: Float!, $width: Float!, $
 }
 `;
 const UPDATE_RECTANGLE = gql`
-mutation UpdateRectangle($ts: String!, $x: Float!, $y: Float!, $width: Float!, $height: Float!, $color: String!) {
-  updateRectangle(ts: $ts, x: $x, y: $y, width: $width, height: $height, color: $color) {
+mutation UpdateRectangle($id: String!, $x: Float!, $y: Float!, $width: Float!, $height: Float!, $color: String!) {
+  updateRectangle(id: $id, x: $x, y: $y, width: $width, height: $height, color: $color) {
     rectangle {
       id
-      ts
       x
       y
       width
@@ -43,8 +40,8 @@ mutation UpdateRectangle($ts: String!, $x: Float!, $y: Float!, $width: Float!, $
 }
 `;
 const REMOVE_RECTANGLE = gql`
-mutation RemoveRectangle($ts: String!) {
-  removeRectangle(ts: $ts) {
+mutation RemoveRectangle($id: String!) {
+  removeRectangle(id: $id) {
     rectangle {
       id
     }
@@ -57,7 +54,7 @@ interface CreateRectanglesResult {
   createRectangle: {
     rectangle: Rectangle;
   };
-};
+}
 
 type Props = {
   action: Action;
@@ -98,7 +95,7 @@ function Canvas(props: Props) {
 
     if (toRemove) {
       await removeRectangleMutation({ 
-        variables: {ts: toRemove.ts}
+        variables: {id: toRemove.id}
       })
       // TODO improve the way to remove rectangle from the list
       props.setRectangles(props.rectangles.filter(
@@ -130,9 +127,8 @@ function Canvas(props: Props) {
       const y = Math.min(startPos.y, currentPos.y);
       const width = Math.abs(startPos.x - currentPos.x);
       const height = Math.abs(startPos.y - currentPos.y);
-      const ts: string = Date.now().toString(); // using timestamp as id for now
       const rect = await addRectangleMutation({ 
-        variables: {ts: ts, x, y, width, height, color: props.color }
+        variables: {x, y, width, height, color: props.color }
       })
       if (rect.data) {
         props.setRectangles([...props.rectangles, rect.data.createRectangle.rectangle]);

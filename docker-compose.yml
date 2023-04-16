@@ -9,8 +9,11 @@ services:
     restart: unless-stopped
     ports:
       - 8000:8000
-    env_file:
-      - ./backend/.env
+    environment:
+      - env=dev
+      - database=sqlite:///database.sqlite3
+    # env_file:
+    #   - ./backend/.env
     networks:
       - main
 
@@ -24,8 +27,11 @@ services:
     restart: unless-stopped
     ports:
       - 3000:3000
-    env_file:
-      - ./frontend/.env
+    environment:
+      - env=dev
+      - NEXT_PUBLIC_GRAPHQL_SERVER_URL=http://localhost:8000/graphql
+    # env_file:
+    #   - ./frontend/.env
     networks:
       - main
 

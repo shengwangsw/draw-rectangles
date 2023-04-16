@@ -13,7 +13,6 @@ query {
     edges {
       node {
         id
-        ts
         x
         y
         width
@@ -41,7 +40,7 @@ interface GetRectanglesResult {
       node: Rectangle;
     }[];
   };
-};
+}
 
 export default function Home() {
 

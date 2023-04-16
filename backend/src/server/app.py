@@ -8,7 +8,7 @@ from constants import ENV
 
 app = Flask(__name__)
 CORS(app) # TODO Make it strict
-app.debug = True if ENV=='debug' else False
+app.debug = ENV == 'debug'
 
 app.add_url_rule(
     '/graphql',

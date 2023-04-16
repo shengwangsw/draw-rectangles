@@ -5,10 +5,12 @@
 ### Fill project with correct environment variables value
 * on `backend/.env`
 ```
-env=prod
+env=dev
+database=sqlite:///database.sqlite3
 ```
 * on `frontend/.env`
 ```
+env=dev
 NEXT_PUBLIC_GRAPHQL_SERVER_URL=http://localhost:8000/graphql
 ```
 
@@ -30,6 +32,10 @@ or
 ```shell
 docker-compose up -d --no-deps --build
 ```
+
+### **Try it out**
+Go to:
+`http://localhost:3000`
 
 ## 🧹 Docker clean up
 
